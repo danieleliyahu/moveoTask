@@ -17,6 +17,13 @@ function App() {
     console.log("finishhh");
     playAll();
   }, [finish]);
+  useEffect(async () => {
+    let audiosList = await localStorage.getItem("audiosList");
+    console.log(audiosList);
+    if (audiosList.length !== 0) {
+      setAudios(JSON.parse(audiosList));
+    }
+  }, []);
   const addToPlaying = (e) => {
     e.onOrOff ? (e.onOrOff = false) : (e.onOrOff = true);
     setAudios([...audios]);
@@ -50,7 +57,7 @@ function App() {
   };
   const playAll = () => {
     console.log("start");
-    console.log(playing);
+    console.log(audios);
 
     // playing.map((audio) => {
     //   audio.audio.onended = function () {
@@ -62,13 +69,15 @@ function App() {
     // });
     audios.map((audio) => {
       if (!audio.onOrOff) return;
-      audio.audio.onended = function () {
+      audio = new Audio(audio.path);
+      audio.onended = function () {
         setFinish(finish ? false : true);
       };
-      audio.audio.currentTime = 0;
+      audio.currentTime = 0;
 
-      audio.audio.play();
+      audio.play();
     });
+    // localStorage.setItem("audiosList", JSON.stringify(audios));
   };
   // navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
   //   const mediaRecorder = new MediaRecorder(stream);
@@ -101,7 +110,11 @@ function App() {
   // });
 
   // mediaREcorder.start();
-
+  const turnOnOrOf = (audio) => {
+    audio.onOrOff ? (audio.onOrOff = false) : (audio.onOrOff = true);
+    setAudios([...audios]);
+    localStorage.setItem("audiosList", JSON.stringify(audios));
+  };
   return (
     <div className="App">
       <Header />
@@ -117,7 +130,7 @@ function App() {
                 <div
                   className={audio.onOrOff ? "audioDiv on" : "red audioDiv off"}
                   onClick={() => {
-                    addToPlaying(audio);
+                    turnOnOrOf(audio);
                   }}>
                   <div className="audioName">{audio.name}</div>
                 </div>
