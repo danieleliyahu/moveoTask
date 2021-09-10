@@ -12,7 +12,11 @@ function App() {
   // });
   const [playing, setPlaying] = useState([]);
   const [audios, setAudios] = useState(audioList);
-  useEffect(() => {}, [playing]);
+  const [finish, setFinish] = useState(true);
+  useEffect(() => {
+    console.log("finishhh");
+    playAll();
+  }, [finish]);
   const addToPlaying = (e) => {
     e.path ? (e.path = false) : (e.path = true);
     setAudios([...audios]);
@@ -23,18 +27,30 @@ function App() {
     if (playing.find((audio) => e === audio)) {
       setPlaying(playing.filter((audio) => e !== audio));
       e.audio.pause();
+
       // setPlaying([...playing, e]);
     } else {
       setPlaying([...playing, e]);
+      console.log(playing, "sss");
     }
   };
-  const pauseAll = (e) => {
-    // e.play();
+  const pauseAll = () => {
+    playing.map((audio) => {
+      audio.audio.pause();
+    });
   };
   const playAll = () => {
+    console.log("start");
+    console.log(playing);
     playing.map((audio) => {
-      audio.audio.loop = true;
+      audio.audio.onended = function () {
+        console.log(audio.audio.currentTime, "hiiiii");
+        setFinish(finish ? false : true);
+      };
+      console.log(audio.audio.currentTime, "stop", audio.name);
+      audio.audio.currentTime = 0;
       audio.audio.play();
+      console.log(audio.audio.currentTime, "start", audio.name);
     });
   };
   return (
@@ -57,6 +73,9 @@ function App() {
         : ""}
       <button onClick={playAll}>Play</button>
       <button onClick={pauseAll}>pause</button>
+      {playing.map((audio) => {
+        return audio.name;
+      })}
       {/* {audioList.map((audio) => {
         audio.audio.loop = true;
         return (
