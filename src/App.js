@@ -18,7 +18,7 @@ function App() {
     playAll();
   }, [finish]);
   const addToPlaying = (e) => {
-    e.path ? (e.path = false) : (e.path = true);
+    e.onOrOff ? (e.onOrOff = false) : (e.onOrOff = true);
     setAudios([...audios]);
     console.log(
       playing.find((audio) => e === audio),
@@ -33,57 +33,98 @@ function App() {
       setPlaying([...playing, e]);
       console.log(playing, "sss");
     }
+    if (playing.find((audio) => e === audio)) {
+      setPlaying(playing.filter((audio) => e !== audio));
+      e.audio.pause();
+
+      // setPlaying([...playing, e]);
+    } else {
+      setPlaying([...playing, e]);
+      console.log(playing, "sss");
+    }
   };
   const pauseAll = () => {
-    playing.map((audio) => {
+    audios.map((audio) => {
       audio.audio.pause();
     });
   };
   const playAll = () => {
     console.log("start");
     console.log(playing);
-    playing.map((audio) => {
+
+    // playing.map((audio) => {
+    //   audio.audio.onended = function () {
+    //     setFinish(finish ? false : true);
+    //   };
+    //   audio.audio.currentTime = 0;
+
+    //   audio.audio.play();
+    // });
+    audios.map((audio) => {
+      if (!audio.onOrOff) return;
       audio.audio.onended = function () {
-        console.log(audio.audio.currentTime, "hiiiii");
         setFinish(finish ? false : true);
       };
-      console.log(audio.audio.currentTime, "stop", audio.name);
       audio.audio.currentTime = 0;
+
       audio.audio.play();
-      console.log(audio.audio.currentTime, "start", audio.name);
     });
   };
+  // navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+  //   const mediaRecorder = new MediaRecorder(stream);
+  //   mediaRecorder.start();
+
+  //   const audioChunks = [];
+  //   mediaRecorder.addEventListener("dataavailable", (event) => {
+  //     audioChunks.push(event.data);
+  //   });
+
+  //   mediaRecorder.addEventListener("stop", () => {
+  //     const audioBlob = new Blob(audioChunks);
+  //     const audioUrl = URL.createObjectURL(audioBlob);
+  //     const audio = new Audio(audioUrl);
+  //     audio.play();
+  //   });
+
+  //   setTimeout(() => {
+  //     mediaRecorder.stop();
+  //   }, 3000);
+  // });
+
+  // const mediaStreamDestination = audioContext.createMediaStreamDestination();
+
+  // yourSourceNode.connect(mediaStreamDestination);
+  // const mediaRecorder = new MediaRecorder(mediaStreamDestination.stream);
+
+  // mediaRecorder.addEventListener('dataavailable', (e) => {
+  //   // Recorded data is in `e.data`
+  // });
+
+  // mediaREcorder.start();
+
   return (
     <div className="App">
       <Header />
-      {console.log(playing)}
-      {audios
-        ? audios.map((audio) => {
-            return (
-              <div
-                className={audio.path ? "green" : "red"}
-                onClick={() => {
-                  addToPlaying(audio);
-                }}>
-                {audio.path.toString()}
-                <div>hi</div>
-              </div>
-            );
-          })
-        : ""}
-      <button onClick={playAll}>Play</button>
-      <button onClick={pauseAll}>pause</button>
-      {playing.map((audio) => {
-        return audio.name;
-      })}
-      {/* {audioList.map((audio) => {
-        audio.audio.loop = true;
-        return (
-          <audio controls>
-            <source src={audio.path} type="audio/mpeg"></source>
-          </audio>
-        );
-      })} */}
+      <div className="playBar">
+        {" "}
+        <button onClick={playAll}>Play</button>
+        <button onClick={pauseAll}>pause</button>
+      </div>
+      <div className="allAudios container">
+        {audios
+          ? audios.map((audio) => {
+              return (
+                <div
+                  className={audio.onOrOff ? "audioDiv on" : "red audioDiv off"}
+                  onClick={() => {
+                    addToPlaying(audio);
+                  }}>
+                  <div className="audioName">{audio.name}</div>
+                </div>
+              );
+            })
+          : ""}
+      </div>
     </div>
   );
 }

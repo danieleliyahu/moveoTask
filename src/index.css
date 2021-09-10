@@ -1,6 +1,60 @@
-.green {
-  background-color: green;
+.off {
+  opacity: 0.3;
 }
-.red {
-  background-color: red;
+.on {
+  opacity: 1;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  margin: auto;
+}
+
+.allAudios {
+  flex-flow: wrap;
+  display: flex;
+}
+.audioDiv {
+  width: 33%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: none;
+  border: solid #ccc 1px;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  border-radius: 15px;
+  box-shadow: 0 2px 15px 0 rgb(0 0 0 / 13%);
+  background-color: #ffffff;
+}
+.audioName {
+  display: flex;
+  overflow-wrap: anywhere;
+  justify-content: center;
+}
+@media (max-width: 960px) {
+  .container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}
+@media (max-width: 375px) {
+  .container {
+    width: 100%;
+    margin: 0px;
+  }
+  .playBar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 10000;
+  }
+  .playBar button {
+    width: 50%;
+  }
 }
