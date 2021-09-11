@@ -12,8 +12,8 @@ the player can save the audio combination that he like by clicking on the save b
 and load them by clicking on the load button.
 
 ### run the project
-1 - clone the project or download him.
-2 - open in vs code
-3 - go to the front folder inside the project from the terminal.
-4 - write this comment at the terminal `npm i`
-5 - write `npm start` in the terminal and now the app runing on your computer at local host 3000
+1 - clone the project or download him.\
+2 - open in vs code\
+3 - go to the front folder inside the project from the terminal.\
+4 - write this comment at the terminal `npm i`\
+5 - write `npm start` in the terminal and now the app runing on your computer at local host 3000\
