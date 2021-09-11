@@ -6,10 +6,10 @@ const Buttons = ({ save, playAll, pauseAll, changeHandler }) => {
       <div className="playBar">
         {/* save the client choices */}
         <button className="save" onClick={save}>
-          save
+          Save
         </button>
         {/* load the file that save the player choice */}
-        <label for="files">load</label>
+        <label for="files">Load</label>
         <input
           className="hidden"
           type="file"
@@ -20,7 +20,7 @@ const Buttons = ({ save, playAll, pauseAll, changeHandler }) => {
         {/* play all the audio that in on state */}
         <button onClick={playAll}>Play</button>
         {/* pause all the audio that in off state */}
-        <button onClick={pauseAll}>pause</button>
+        <button onClick={pauseAll}>Pause</button>
       </div>
     </div>
   );
