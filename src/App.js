@@ -1,143 +1,117 @@
-import logo from "./logo.svg";
+import FileSaver from "file-saver";
 import "./App.css";
 import Header from "./components/Header";
 import audioList from "./audioList";
 import { useEffect, useState } from "react";
+import Pad from "./components/Pad";
+import Buttons from "./components/Buttons";
 function App() {
-  //  let audioList = [{
-  //    num:1
-  //  }]
-  // audioList.map((audio) => {
-  //   console.log(audio.audio.loop);
-  // });
-  const [playing, setPlaying] = useState([]);
   const [audios, setAudios] = useState(audioList);
   const [finish, setFinish] = useState(true);
+
   useEffect(() => {
-    console.log("finishhh");
     playAll();
   }, [finish]);
+  // when the app uploaded first it check if we have some thing at the local storage
+  // if we have it use that information
   useEffect(async () => {
-    let audiosList = await localStorage.getItem("audiosList");
-    console.log(audiosList);
-    if (audiosList.length !== 0) {
-      setAudios(JSON.parse(audiosList));
-    }
+    localStorage.getItem("audiosList")
+      ? setAudios(
+          JSON.parse(localStorage.getItem("audiosList")).map((audio) => {
+            audio.audio = new Audio(audio.path);
+            return audio;
+          })
+        )
+      : setAudios(
+          audios.map((audio) => {
+            audio.audio = new Audio(audio.path);
+            return audio;
+          })
+        );
   }, []);
-  const addToPlaying = (e) => {
-    e.onOrOff ? (e.onOrOff = false) : (e.onOrOff = true);
-    setAudios([...audios]);
-    console.log(
-      playing.find((audio) => e === audio),
-      9
-    );
-    if (playing.find((audio) => e === audio)) {
-      setPlaying(playing.filter((audio) => e !== audio));
-      e.audio.pause();
-
-      // setPlaying([...playing, e]);
-    } else {
-      setPlaying([...playing, e]);
-      console.log(playing, "sss");
-    }
-    if (playing.find((audio) => e === audio)) {
-      setPlaying(playing.filter((audio) => e !== audio));
-      e.audio.pause();
-
-      // setPlaying([...playing, e]);
-    } else {
-      setPlaying([...playing, e]);
-      console.log(playing, "sss");
-    }
-  };
+  // pause all the on audios
   const pauseAll = () => {
     audios.map((audio) => {
+      if (!audio.onOrOff) return;
+
       audio.audio.pause();
     });
   };
+  // play all songs that on
   const playAll = () => {
-    console.log("start");
-    console.log(audios);
-
-    // playing.map((audio) => {
-    //   audio.audio.onended = function () {
-    //     setFinish(finish ? false : true);
-    //   };
-    //   audio.audio.currentTime = 0;
-
-    //   audio.audio.play();
-    // });
     audios.map((audio) => {
       if (!audio.onOrOff) return;
-      audio = new Audio(audio.path);
-      audio.onended = function () {
+      // check if the audio finish to be played change the
+      //  state to finish the react fill the change and execute the playAll function again
+      audio.audio.onended = function () {
         setFinish(finish ? false : true);
       };
-      audio.currentTime = 0;
+      // restart the time of all songs to make them start together
+      audio.audio.currentTime = 0;
 
-      audio.play();
+      audio.audio.play();
     });
-    // localStorage.setItem("audiosList", JSON.stringify(audios));
   };
-  // navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-  //   const mediaRecorder = new MediaRecorder(stream);
-  //   mediaRecorder.start();
 
-  //   const audioChunks = [];
-  //   mediaRecorder.addEventListener("dataavailable", (event) => {
-  //     audioChunks.push(event.data);
-  //   });
-
-  //   mediaRecorder.addEventListener("stop", () => {
-  //     const audioBlob = new Blob(audioChunks);
-  //     const audioUrl = URL.createObjectURL(audioBlob);
-  //     const audio = new Audio(audioUrl);
-  //     audio.play();
-  //   });
-
-  //   setTimeout(() => {
-  //     mediaRecorder.stop();
-  //   }, 3000);
-  // });
-
-  // const mediaStreamDestination = audioContext.createMediaStreamDestination();
-
-  // yourSourceNode.connect(mediaStreamDestination);
-  // const mediaRecorder = new MediaRecorder(mediaStreamDestination.stream);
-
-  // mediaRecorder.addEventListener('dataavailable', (e) => {
-  //   // Recorded data is in `e.data`
-  // });
-
-  // mediaREcorder.start();
+  // change the state of the audio and save it on local storage
   const turnOnOrOf = (audio) => {
     audio.onOrOff ? (audio.onOrOff = false) : (audio.onOrOff = true);
+    audio.audio.pause();
     setAudios([...audios]);
     localStorage.setItem("audiosList", JSON.stringify(audios));
+  };
+  // function that executed when the save butten clicked it save txt file that
+  // contain in it the object with all of the choice that the client made
+  const save = async () => {
+    let audioList = JSON.stringify(audios);
+    var blob = new Blob([audioList], { type: "text/plain;charset=utf-8" });
+
+    FileSaver.saveAs(blob, "audiosList.txt");
+  };
+
+  const changeHandler = async (event) => {
+    new Promise((res, rej) => {
+      res(event.target.files[0]);
+    })
+      .then(async (file) => {
+        pauseAll();
+        var text = await file.text();
+
+        handleSubmission(JSON.parse(text));
+        localStorage.setItem("audiosList", text);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  const handleSubmission = async (file) => {
+    console.log(file);
+
+    file = file.map((audio) => {
+      audio.audio = new Audio(audio.path);
+      return audio;
+    });
+    setAudios(file);
+    localStorage.setItem("audiosList", JSON.stringify(file));
   };
   return (
     <div className="App">
       <Header />
-      <div className="playBar">
-        {" "}
-        <button onClick={playAll}>Play</button>
-        <button onClick={pauseAll}>pause</button>
-      </div>
-      <div className="allAudios container">
-        {audios
-          ? audios.map((audio) => {
-              return (
-                <div
-                  className={audio.onOrOff ? "audioDiv on" : "red audioDiv off"}
-                  onClick={() => {
-                    turnOnOrOf(audio);
-                  }}>
-                  <div className="audioName">{audio.name}</div>
-                </div>
-              );
-            })
-          : ""}
-      </div>
+      <Buttons
+        save={save}
+        playAll={playAll}
+        pauseAll={pauseAll}
+        changeHandler={changeHandler}
+      />
+      <Pad
+        turnOnOrOf={turnOnOrOf}
+        playAll={playAll}
+        pauseAll={pauseAll}
+        audios={audios}
+        setAudios={setAudios}
+        finish={finish}
+        setFinish={setFinish}></Pad>
     </div>
   );
 }

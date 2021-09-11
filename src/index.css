@@ -1,10 +1,51 @@
+html {
+  background-image: url("../src/105-1053129_2048x1280-cool-dj-wallpapers-music-desktop-background.jpg");
+}
 .off {
   opacity: 0.3;
 }
 .on {
   opacity: 1;
 }
-
+.saveAndUpload {
+  display: flex;
+  justify-content: center;
+}
+.saveAndUpload label {
+  margin-left: 1rem;
+}
+label {
+  background-color: #6acb6a;
+  margin-left: 1rem;
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding-top: 1px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 1px;
+  font-size: 1rem;
+}
+.playBar button {
+  margin-left: 1rem;
+  padding-top: 1px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 1px;
+  font-size: 1rem;
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+}
+.playBar {
+  margin-bottom: 2rem;
+}
+h1 {
+  color: white;
+}
+.hidden {
+  display: none;
+}
 .container {
   display: flex;
   justify-content: center;
@@ -50,11 +91,20 @@
   }
   .playBar {
     width: 100%;
+    display: flex;
     position: fixed;
     bottom: 0;
+    left: 0;
     z-index: 10000;
+    margin-right: 1rem;
+    margin-bottom: 0rem;
   }
+
   .playBar button {
     width: 50%;
+    font-size: 1rem;
+  }
+  .playBar .save {
+    margin: 0;
   }
 }
