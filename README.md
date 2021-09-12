@@ -13,7 +13,8 @@ and load them by clicking on the load button.
 
 - load the audio combination that the user saved 
 - save the user audio combination
-- play audio combonation 
+- play audio
+- pause audio 
 - turn on and off while the loop running
 
 ## Tech
